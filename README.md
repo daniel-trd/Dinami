@@ -11,7 +11,7 @@ Sistema web desenvolvido para controle financeiro, permitindo gerenciar contas a
 * 💰 Cadastro de contas a receber
 * 📅 Controle de vencimentos
 * ✅ Controle de status (Pendente / Pago / Recebido)
-* 🧾 Histórico de movimentações
+* 🧾 Histórico de movimentações (Em Breve)
 * 📂 Organização por módulos (Financeiro, Cadastro)
 
 ---
@@ -28,7 +28,7 @@ Sistema web desenvolvido para controle financeiro, permitindo gerenciar contas a
 
 ## 📸 Preview
 
-> *(Adicione aqui prints do sistema depois)*
+> *(Em Breve)*
 
 ---
 
