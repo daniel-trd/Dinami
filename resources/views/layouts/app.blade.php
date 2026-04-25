@@ -24,15 +24,13 @@
             <nav class="flex flex-col text-sm">
 
                 <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('dashboard.index') }}"
                     class="px-4 py-2 hover:bg-slate-800 rounded-lg">
                     📊 Dashboard
                 </a>
 
                 <!-- CADASTRO -->
-                <div x-data="{ 
-        openCadastro: {{ request()->routeIs('clientes.*') || request()->routeIs('fornecedores.*') ? 'true' : 'false' }} 
-    }">
+                <div x-data="{ openCadastro: {{ request()->routeIs('clientes.*') || request()->routeIs('fornecedores.*') ? 'true' : 'false' }} }">
 
                     <button @click="openCadastro = !openCadastro"
                         class="w-full flex justify-between items-center px-4 py-2 hover:bg-slate-800 rounded-lg">
@@ -49,11 +47,13 @@
                     <div x-show="openCadastro" x-transition
                         class="ml-6 mt-1 flex flex-col border-l border-slate-700 pl-3">
 
-                        <a href="#" class="px-3 py-2 hover:bg-slate-800 rounded-md">
+                        <a href="{{ route('cliente.index') }}" 
+                        class="px-3 py-2 hover:bg-slate-800 rounded-md">
                             👤 Clientes
                         </a>
 
-                        <a href="#" class="px-3 py-2 hover:bg-slate-800 rounded-md">
+                        <a href="{{ route('fornecedor.index') }}" 
+                        class="px-3 py-2 hover:bg-slate-800 rounded-md">
                             🏢 Fornecedores
                         </a>
 

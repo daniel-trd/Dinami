@@ -39,7 +39,7 @@
 
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Cliente</label>
-                    <input type="text" name="cliente"
+                    <input type="text" name="id_cliente"
                         placeholder="Cliente"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
                 </div>

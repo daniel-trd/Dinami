@@ -37,7 +37,7 @@ Sistema web desenvolvido para controle financeiro, permitindo gerenciar contas a
 ### 1. Clonar repositório
 
 ```bash
-git clone https://github.com/SEU_USUARIO/dinami.git
+git clone https://github.com/daniel-trd/dinami.git
 cd dinami
 ```
 

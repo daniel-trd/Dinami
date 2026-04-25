@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContasPagar;
 use Illuminate\Http\Request;
+use App\Models\Fornecedores;
 use PhpParser\Node\NullableType;
 
 class ContaPagarController extends Controller
@@ -13,8 +14,9 @@ class ContaPagarController extends Controller
      */
     public function index()
     {
-        $contas = ContasPagar::all();
-        $contas = ContasPagar::orderBy('id', 'asc')->get();
+        $contas = ContasPagar::with('fornecedor')
+            ->orderBy('id_conta_pagar', 'asc')
+            ->get();
 
         return view('contas_pagar.index', compact('contas'));
     }
@@ -24,7 +26,8 @@ class ContaPagarController extends Controller
      */
     public function create()
     {
-        return view('contas_pagar.create');
+        $fornecedores = Fornecedores::all();
+        return view('contas_pagar.create', compact('fornecedores'));
     }
 
     /**
@@ -33,15 +36,25 @@ class ContaPagarController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
             'descricao' => 'required|max:255',
             'valor' => 'nullable',
-            'fornecdor' => 'nullable',
+            'status' => 'nullable',
             'data_vencimento' => 'nullable'
         ]);
 
-        ContasPagar::create($request->all());
+        ContasPagar::create($request->only([
+            'descricao',
+            'id_fornecedor',
+            'valor',
+            'status',
+            'data_vencimento',
+            'data_pagamento'
+        ]));
 
-        return redirect()->route('contas_pagar.index');
+        return redirect()
+            ->route('contas_pagar.index')
+            ->with('success', 'Conta criada com sucesso');
     }
 
     /**
@@ -49,7 +62,7 @@ class ContaPagarController extends Controller
      */
     public function show(string $id)
     {
-        $contas = ContasPagar::findOrFail($id);
+        $contas = ContasPagar::with('fornecedor')->findOrFail($id);
         return view('contas_pagar.show', compact('contas'));
     }
 
@@ -58,7 +71,7 @@ class ContaPagarController extends Controller
      */
     public function edit(string $id)
     {
-        $contas = ContasPagar::findOrFail($id);
+        $contas = ContasPagar::with('fornecedor')->findOrFail($id);
         return view('contas_pagar.edit', compact('contas'));
     }
 
@@ -70,12 +83,20 @@ class ContaPagarController extends Controller
         $request->validate([
             'descricao' => 'required|max:255',
             'valor' => 'nullable',
-            'fornecdor' => 'nullable',
+            'status' => 'nullable',
+            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
             'data_vencimento' => 'nullable'
         ]);
 
         $contas = ContasPagar::findOrFail($id);
-        $contas->update($request->all());
+        $contas->update($request->only([
+            'descricao',
+            'id_fornecedor',
+            'valor',
+            'status',
+            'data_vencimento',
+            'data_pagamento'
+        ]));
 
         return redirect()
             ->route('contas_pagar.index')

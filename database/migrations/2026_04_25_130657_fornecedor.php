@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contas_pagar', function (Blueprint $table) {
-            $table->id();
-            $table->string('descricao');
-            $table->decimal('valor', 10, 2);
-            $table->string('fornecedor');
-            $table->date('data_vencimento');
+        Schema::create('fornecedor', function (Blueprint $table) {
+            $table->id('id_fornecedor');
+            $table->string('nome');
+            $table->string('email')->unique();
+            $table->string('telefone')->nullable();
             $table->date('data_cadastro')->default(now());
-            $table->date('data_pagamento')->nullable();
-            $table->enum('status', ['pendente', 'pago'])->default('pendente');
+            $table->enum('status', ['ativo', 'inativo'])->default('ativo');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contas_pagar');
+        Schema::dropIfExists('fornecedor');
     }
 };

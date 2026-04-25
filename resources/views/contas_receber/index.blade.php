@@ -32,7 +32,7 @@
             @forelse($contas as $conta)
             <tr class="border-t hover:bg-gray-50 text-center">
 
-                <td class="p-4">{{ $conta->id }}</td>
+                <td class="p-4">{{ $conta->id_conta_receber }}</td>
 
                 <td class="p-4">{{ $conta->descricao }}</td>
 
@@ -40,7 +40,7 @@
                     R$ {{ number_format($conta->valor, 2, ',', '.') }}
                 </td>
 
-                <td class="p-4">{{ $conta->cliente }}</td>
+                <td class="p-4">{{ $conta->cliente->nome ?? '-' }}</td>
 
                 <td class="p-4">{{ $conta->data_vencimento ? date('d/m/Y', strtotime($conta->data_vencimento)) : '-' }}</td>
 
@@ -61,13 +61,13 @@
                     <div class="flex justify-center items-center gap-2">
 
                         <!-- Editar -->
-                        <a href="{{ route('contas_receber.edit', $conta->id) }}"
+                        <a href="{{ route('contas_receber.edit', $conta->id_conta_receber) }}"
                             class="bg-emerald-500 text-white px-3 py-1.5 text-sm rounded-md hover:bg-emerald-600 transition ">
                             Editar
                         </a>
 
                         <!-- Excluir -->
-                        <form action="{{ route('contas_receber.destroy', $conta->id) }}"
+                        <form action="{{ route('contas_receber.destroy', $conta->id_conta_receber) }}"
                             method="POST"
                             class="inline-flex">
                             @csrf

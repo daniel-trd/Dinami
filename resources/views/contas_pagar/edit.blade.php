@@ -23,7 +23,7 @@
 
     <div class="bg-white rounded-2xl shadow p-6 max-w-4xl mx-auto">
 
-        <form method="POST" action="{{ route('contas_pagar.update', $contas->id) }}">
+        <form method="POST" action="{{ route('contas_pagar.update', $contas->id_conta_pagar) }}">
             @csrf
             @method('PUT')
 
@@ -41,7 +41,7 @@
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Fornecedor</label>
                     <input type="text" name="fornecedor"
-                        value="{{ $contas->fornecedor }}"
+                        value="{{ $contas->fornecedor->nome ?? '-' }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
                 </div>
 

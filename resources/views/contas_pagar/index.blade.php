@@ -32,7 +32,7 @@
             @forelse($contas as $conta)
             <tr class="border-t hover:bg-gray-50">
 
-                <td class="p-4 text-center">{{ $conta->id }}</td>
+                <td class="p-4 text-center">{{ $conta->id_conta_pagar }}</td>
 
                 <td class="p-4 text-center">{{ $conta->descricao }}</td>
 
@@ -40,7 +40,7 @@
                     R$ {{ number_format($conta->valor, 2, ',', '.') }}
                 </td>
 
-                <td class="p-4 text-center">{{ $conta->fornecedor }}</td>
+                <td class="p-4 text-center">{{ $conta->fornecedor->nome ?? '-' }}</td>
 
                 <td class="p-4 text-center">
                     {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : '-' }}
@@ -66,13 +66,13 @@
                     <div class="flex justify-center items-center gap-2">
 
                         <!-- Editar -->
-                        <a href="{{ route('contas_pagar.edit', $conta->id) }}"
+                        <a href="{{ route('contas_pagar.edit', $conta->id_conta_pagar) }}"
                             class="bg-emerald-500 text-white px-3 py-1.5 text-sm rounded-md hover:bg-emerald-600 transition ">
                             Editar
                         </a>
 
                         <!-- Excluir -->
-                        <form action="{{ route('contas_pagar.destroy', $conta->id) }}"
+                        <form action="{{ route('contas_pagar.destroy', $conta->id_conta_pagar) }}"
                             method="POST"
                             class="inline-flex">
                             @csrf

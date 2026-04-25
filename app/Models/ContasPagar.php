@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Fornecedores;
 
 class ContasPagar extends Model
 {
@@ -12,11 +13,13 @@ class ContasPagar extends Model
     // Tabela relacionada (opcional se seguir convenção)
     protected $table = 'contas_pagar';
 
+    protected $primaryKey = 'id_conta_pagar';
+
     // Campos que podem ser preenchidos em massa
     protected $fillable = [
+        'id_fornecedor',
         'descricao',
         'valor',
-        'fornecedor',
         'data_vencimento',
         'data_cadastro',
         'data_pagamento',
@@ -34,4 +37,9 @@ class ContasPagar extends Model
     // Status padrão (opcional helper)
     const STATUS_PENDENTE = 'pendente';
     const STATUS_PAGO = 'pago';
+
+    public function fornecedor()
+    {
+        return $this->belongsTo(Fornecedores::class, 'id_fornecedor', 'id_fornecedor');
+    }
 }

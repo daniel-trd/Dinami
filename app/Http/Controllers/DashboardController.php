@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ContasPagar;
 use App\Models\ContasReceber;
+use App\Models\Clientes;
+use App\Models\Fornecedores;
 
 class DashboardController extends Controller
 {
@@ -13,29 +14,25 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // A pagar (somente pendentes)
         $pagar = ContasPagar::where('status', 'pendente')->sum('valor');
 
-        // A receber (somente pendentes)
         $receber = ContasReceber::where('status', 'pendente')->sum('valor');
 
-        // Total pago (saída real)
-        $pago = ContasPagar::where('status', 'pago')->sum('valor');
+        $novosClientes = Clientes::where('data_cadastro', '>=', now()->subMonth())->count();
 
-        // Total recebido (entrada real)
-        $recebido = ContasReceber::where('status', 'recebido')->sum('valor');
+        $novosFornecedores = Fornecedores::where('data_cadastro', '>=', now()->subMonth())->count();
 
-        // Saldo atual
-        $saldoAtual = $pago - $recebido;
+        $pagos = ContasPagar::where('status', 'pago')->sum('valor');
 
-        // Lucro (entrada - saída)
-        $lucro = $saldoAtual;
+        $recebidos = ContasReceber::where('status', 'recebido')->sum('valor');
 
-        return view('dashboard', compact(
-            'saldoAtual',
+        return view('dashboard.index', compact(
             'receber',
             'pagar',
-            'lucro'
+            'novosClientes',
+            'novosFornecedores',
+            'pagos',
+            'recebidos'
         ));
     }
 }

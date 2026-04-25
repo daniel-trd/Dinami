@@ -39,7 +39,7 @@
 
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Fornecedor</label>
-                    <input type="text" name="fornecedor"
+                    <input type="text" name="id_fornecedor"
                         placeholder="Fornecedor"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
                 </div>
