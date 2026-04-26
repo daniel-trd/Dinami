@@ -24,10 +24,12 @@
             <nav class="flex flex-col text-sm">
 
                 <!-- Dashboard -->
-                <a href="{{ route('dashboard.index') }}"
+                <a href="{{ route('dashboard') }}"
                     class="px-4 py-2 hover:bg-slate-800 rounded-lg">
                     📊 Dashboard
                 </a>
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                 <!-- CADASTRO -->
                 <div x-data="{ openCadastro: {{ request()->routeIs('clientes.*') || request()->routeIs('fornecedores.*') ? 'true' : 'false' }} }">

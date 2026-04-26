@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::resource('contas_pagar', ContaPagarController::class);
 Route::resource('contas_receber', ContaReceberController::class);
 Route::resource('cliente', ClienteController::class);
