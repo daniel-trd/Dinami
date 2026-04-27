@@ -48,10 +48,32 @@ class DashboardController extends Controller
             ->orderBy('mes')
             ->get();
 
-        $graficoLinha = [
-            'labels' => $recebidosPorMes->pluck('mes'),
-            'valores' => $recebidosPorMes->pluck('total'),
+        $graficoLinhaFinanceiro = [
+            'labelsFinanceiro' => $recebidosPorMes->pluck('mes'),
+            'valoresFinanceiro' => $recebidosPorMes->pluck('total'),
         ];
+
+        $novosPorMes = Clientes::selectRaw("
+        EXTRACT(MONTH FROM data_cadastro) as mes,
+        COUNT(*) as total
+    ")
+            ->where('data_cadastro', '>=', now()->subYear())
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+
+        $graficoLinhaCadastro = [
+            'labelsCadastro' => $novosPorMes->pluck('mes'),
+            'valoresCadastro' => $novosPorMes->pluck('total'),
+        ];
+
+        $graficoCadastro = [
+            'labelsCadastro' => ['Novos Clientes', 'Novos Fornecedores'],
+            'valoresCadastro' => [$novosClientes, $novosFornecedores],
+        ];
+
+        $clientesInativos = Clientes::where('status', 'inativo')->count();
+        $fornecedoresInativos = Fornecedores::where('status', 'inativo')->count();
 
         return view('dashboard.index', compact(
             'tipo',
@@ -62,7 +84,11 @@ class DashboardController extends Controller
             'novosClientes',
             'novosFornecedores',
             'graficoFinanceiro',
-            'graficoLinha'
+            'graficoLinhaFinanceiro',
+            'graficoLinhaCadastro',
+            'graficoCadastro',
+            'clientesInativos',
+            'fornecedoresInativos'
         ));
     }
 }

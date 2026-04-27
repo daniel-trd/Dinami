@@ -67,7 +67,7 @@
                 }]
             },
             options: {
-                responsive: true,
+                responsive: true,  
             }
         });
     </script>
@@ -78,10 +78,11 @@
         new Chart(ctxLinha, {
             type: 'line',
             data: {
-                labels: @json($graficoLinha['labels']),
+                labels: @json($graficoLinhaFinanceiro['labelsFinanceiro']),
                 datasets: [{
                     label: 'Recebidos por mês',
-                    data: @json($graficoLinha['valores']),
+                    data: @json($graficoLinhaFinanceiro['valoresFinanceiro']),
+                    borderWidth: 1,
                     tension: 0.4 // deixa a linha suave
                 }]
             },
@@ -109,6 +110,64 @@
         <p class="text-gray-400 text-sm">Novos Fornecedores (último mês)</p>
         <h3 class="text-2xl font-bold text-blue-600">{{ $novosFornecedores }}</h3>
     </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+        <p class="text-gray-400 text-sm">Quantidade de Clientes Inativos</p>
+        <h3 class="text-2xl font-bold text-red-600">{{ $clientesInativos }}</h3>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+        <p class="text-gray-400 text-sm">Quantidade de Fornecedores Inativos</p>
+        <h3 class="text-2xl font-bold text-red-600">{{ $fornecedoresInativos }}</h3>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow ">
+        <canvas id="graficoCadastro"></canvas>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+        <canvas id="graficoLinhaCadastro"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('graficoCadastro');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @json($graficoCadastro['labelsCadastro']),
+                datasets: [{
+                    label: 'Novos Cadastros',
+                    data: @json($graficoCadastro['valoresCadastro']),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+            }
+        });
+    </script>
+
+    <script>
+        const ctxLinha = document.getElementById('graficoLinhaCadastro');
+
+        new Chart(ctxLinha, {
+            type: 'line',
+            data: {
+                labels: @json($graficoLinhaCadastro['labelsCadastro']),
+                datasets: [{
+                    label: 'Novos Clientes por mês',
+                    data: @json($graficoLinhaCadastro['valoresCadastro']),
+                    borderWidth: 1,
+                    tension: 0.4 // deixa a linha suave
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
 
 </div>
 
