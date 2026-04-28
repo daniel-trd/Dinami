@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
     ];
 
     /**
@@ -45,4 +46,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    const STATUS_ATIVO = 'ativo';
+    const STATUS_INATIVO = 'inativo';
 }

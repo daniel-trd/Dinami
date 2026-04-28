@@ -98,6 +98,7 @@
                         </form>
 
                     </div>
+
                 </td>
 
             </tr>
@@ -110,6 +111,51 @@
             @endforelse
         </tbody>
     </table>
+
+    <div class="p-4 flex flex-col md:flex-row justify-between items-center gap-4 border-t">
+
+        <!-- INFO -->
+        <span class="text-sm text-gray-500">
+            Mostrando <strong>{{ $clientes->firstItem() }}</strong>
+            até <strong>{{ $clientes->lastItem() }}</strong>
+            de <strong>{{ $clientes->total() }}</strong> registros
+        </span>
+
+        <!-- CONTROLES -->
+        <div class="flex items-center gap-3">
+
+            <form method="GET" class="flex items-center gap-2">
+
+                <input type="hidden" name="status" value="{{ request('status') }}">
+
+                <label class="text-sm text-gray-500 hidden sm:block">
+                    Por página:
+                </label>
+
+                <select name="per_page"
+                    onchange="this.form.submit()"
+                    class="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm shadow-sm 
+                       hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+
+                    @foreach([10,15,20,50,75] as $qtd)
+                    <option value="{{ $qtd }}"
+                        {{ request('per_page',10) == $qtd ? 'selected' : '' }}>
+                        {{ $qtd }}
+                    </option>
+                    @endforeach
+
+                </select>
+
+            </form>
+
+            <!-- PAGINAÇÃO -->
+            <div class="flex items-center gap-1">
+                {{ $clientes->links() }}
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

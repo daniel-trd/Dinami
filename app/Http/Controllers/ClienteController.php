@@ -14,12 +14,14 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status');
+        $perPage = $request->get('per_page', 10);
 
         $clientes = Clientes::query()
             ->when($status === 'ativo', fn($q) => $q->where('status', 'ativo'))
             ->when($status === 'inativo', fn($q) => $q->where('status', 'inativo'))
             ->when(!$status, fn($q) => $q->where('status', 'ativo'))
-            ->get();
+            ->paginate($perPage)
+            ->appends($request->query()); // mantém filtros
 
         return view('cliente.index', compact('clientes', 'status'));
     }

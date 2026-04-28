@@ -14,9 +14,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credenciais = $request->only('email', 'password');
+        $user = \App\Models\User::where('email', $request->email)->first();
 
-        if (Auth::attempt($credenciais)) {
+        if ($user && $user->status !== 'ativo') {
+            return back()->with('error', 'Usuário inativo.');
+        }
+
+        if (Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+            'status' => 'ativo'
+        ])) {
             $request->session()->regenerate();
             return redirect()->route('dashboard');
         }

@@ -264,12 +264,12 @@
                     <div x-show="openConfiguracao" x-transition
                         class="ml-6 mt-1 flex flex-col border-l border-slate-700 pl-3">
 
-                        <a href="{{ route('contas_pagar.index') }}"
+                        <a href="{{ route('configuracao.usuarios.index', auth()->user()->configuracao_id ?? 1) }}"
                             class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
 
                             <!-- Ícone -->
                             <svg xmlns="http://www.w3.org/2000/svg"
-                                class="w-4 h-4 text-emerald-400" 
+                                class="w-4 h-4 text-emerald-400"
                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                             </svg>
@@ -308,6 +308,42 @@
 
                 </div>
             </header>
+
+            <div class="fixed top-5 right-5 z-50 flex flex-col gap-2 w-80">
+
+                @if(session('success'))
+                <div
+                    x-data="{ show: true }"
+                    x-init="setTimeout(() => show = false, 3000)"
+                    x-show="show"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="bg-slate-800 text-white px-4 py-3 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <span>{{ session('success') }}</span>
+                        <button @click="show = false">✕</button>
+                    </div>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div
+                    x-data="{ show: true }"
+                    x-init="setTimeout(() => show = false, 3000)"
+                    x-show="show"
+                    class="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <span>{{ session('error') }}</span>
+                        <button @click="show = false">✕</button>
+                    </div>
+                </div>
+                @endif
+
+            </div>
 
             <!-- Page -->
             <main class="p-8 overflow-y-auto">

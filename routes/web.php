@@ -7,6 +7,7 @@ use App\Http\Controllers\ContaReceberController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -27,3 +28,6 @@ Route::patch('/cliente/{cliente}/toggle-status', [ClienteController::class, 'tog
 
 Route::resource('fornecedor', FornecedorController::class);
 Route::patch('/fornecedor/{fornecedor}/toggle-status', [FornecedorController::class, 'toggleStatus'])->name('fornecedor.toggleStatus');
+
+Route::resource('configuracao.usuarios', UserController::class);
+Route::patch('/configuracao.usuarios/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('configuracao.usuarios.toggleStatus');

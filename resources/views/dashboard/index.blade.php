@@ -59,15 +59,16 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: @json($graficoFinanceiro['labels']),
+                labels: @json($graficoLinhaFinanceiro['labelsFinanceiro']),
+                data: @json($graficoLinhaFinanceiro['valoresFinanceiro']),
                 datasets: [{
                     label: 'Financeiro',
-                    data: @json($graficoFinanceiro['valores']),
+                    data: @json($graficoLinhaFinanceiro['valoresFinanceiro']),
                     borderWidth: 1
                 }]
             },
             options: {
-                responsive: true,  
+                responsive: true,
             }
         });
     </script>
@@ -80,7 +81,7 @@
             data: {
                 labels: @json($graficoLinhaFinanceiro['labelsFinanceiro']),
                 datasets: [{
-                    label: 'Recebidos por mês',
+                    label: 'Financeiro',
                     data: @json($graficoLinhaFinanceiro['valoresFinanceiro']),
                     borderWidth: 1,
                     tension: 0.4 // deixa a linha suave
@@ -135,15 +136,25 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: @json($graficoCadastro['labelsCadastro']),
+                labels: @json($graficoLinhaCadastro['labelsCadastro']),
                 datasets: [{
-                    label: 'Novos Cadastros',
-                    data: @json($graficoCadastro['valoresCadastro']),
-                    borderWidth: 1
+                    label: 'Cadastro',
+                    data: @json($graficoLinhaCadastro['valoresCadastro']),
+                    borderWidth: 1,
+                    tension: 0.4 // deixa a linha suave
                 }]
             },
             options: {
                 responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 10, // 👈 aumenta a escala
+                        ticks: {
+                            stepSize: 1 // 👈 controla intervalo (1 em 1)
+                        }
+                    }
+                }
             }
         });
     </script>
@@ -156,7 +167,7 @@
             data: {
                 labels: @json($graficoLinhaCadastro['labelsCadastro']),
                 datasets: [{
-                    label: 'Novos Clientes por mês',
+                    label: 'Cadastro',
                     data: @json($graficoLinhaCadastro['valoresCadastro']),
                     borderWidth: 1,
                     tension: 0.4 // deixa a linha suave
@@ -164,7 +175,15 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 10, // 👈 aumenta a escala
+                        ticks: {
+                            stepSize: 1 // 👈 controla intervalo (1 em 1)
+                        }
+                    }
+                }
             }
         });
     </script>
