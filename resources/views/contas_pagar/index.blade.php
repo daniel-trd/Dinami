@@ -21,9 +21,9 @@
                 <th class="p-4 text-center">Valor</th>
                 <th class="p-4 text-center">Fornecedor</th>
                 <th class="p-4 text-center">Vencimento</th>
-                <th class="p-4 text-center">Status</th>
                 <th class="p-4 text-center">Data Cadastro</th>
                 <th class="p-4 text-center">Data Pagamento</th>
+                <th class="p-4 text-center">Status</th>
                 <th class="p-4 text-center">Ações</th>
             </tr>
         </thead>
@@ -47,19 +47,19 @@
                 </td>
 
                 <td class="p-4 text-center">
-                    @if($conta->status == 'pago')
-                    <span class="text-green-600 font-semibold">Pago</span>
-                    @else
-                    <span class="text-yellow-500 font-semibold">Pendente</span>
-                    @endif
-                </td>
-
-                <td class="p-4 text-center">
                     {{ $conta->data_cadastro ? date('d/m/Y', strtotime($conta->data_cadastro)) : '-' }}
                 </td>
 
                 <td class="p-4 text-center">
                     {{ $conta->data_pagamento ? date('d/m/Y', strtotime($conta->data_pagamento)) : '-' }}
+                </td>
+
+                <td class="p-4 text-center">
+                    @if($conta->status == 'pago')
+                    <span class="text-green-600 font-semibold">Pago</span>
+                    @else
+                    <span class="text-yellow-500 font-semibold">Pendente</span>
+                    @endif
                 </td>
 
                 <td class="p-4 text-center">

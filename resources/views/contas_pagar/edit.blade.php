@@ -40,8 +40,8 @@
                 <!-- Fornecedor -->
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Fornecedor</label>
-                    <input type="text" name="fornecedor"
-                        value="{{ $contas->fornecedor->nome ?? '-' }}"
+                    <input type="text" name="id_fornecedor"
+                        value="{{ $contas->id_fornecedor }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
                 </div>
 

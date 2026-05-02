@@ -39,6 +39,7 @@ class UserController extends Controller
         $request->validate([
             'name' =>  'required|max:255',
             'email' => 'unique:users,email',
+            'password' => 'required|min:6',
         ]);
 
         $data = $request->only(['name', 'email', 'password']);
@@ -46,7 +47,9 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('cliente.index');
+        return redirect()
+            ->route('cliente.index')
+            ->with('success', 'Usuário cadastrado com sucesso');
     }
 
     /**
@@ -110,6 +113,11 @@ class UserController extends Controller
         $usuario->status = $usuario->status === 'ativo' ? 'inativo' : 'ativo';
         $usuario->save();
 
-        return back();
+        return back()->with(
+            'success',
+            $usuario->status === 'ativo'
+                ? 'Usuário ativado com sucesso'
+                : 'Usuário inativado com sucesso'
+        );
     }
 }

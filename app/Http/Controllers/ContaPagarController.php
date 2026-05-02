@@ -40,12 +40,13 @@ class ContaPagarController extends Controller
             'descricao' => 'required|max:255',
             'valor' => 'nullable',
             'status' => 'nullable',
-            'data_vencimento' => 'nullable'
+            'data_vencimento' => 'nullable',
+            'data_pagamento' => 'nullable'
         ]);
 
         ContasPagar::create($request->only([
-            'descricao',
             'id_fornecedor',
+            'descricao',
             'valor',
             'status',
             'data_vencimento',
@@ -81,17 +82,18 @@ class ContaPagarController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
             'descricao' => 'required|max:255',
             'valor' => 'nullable',
             'status' => 'nullable',
-            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
-            'data_vencimento' => 'nullable'
+            'data_vencimento' => 'nullable',
+            'data_pagamento' => 'nullable'
         ]);
 
         $contas = ContasPagar::findOrFail($id);
         $contas->update($request->only([
-            'descricao',
             'id_fornecedor',
+            'descricao',
             'valor',
             'status',
             'data_vencimento',

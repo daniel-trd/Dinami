@@ -15,15 +15,35 @@ class ClienteController extends Controller
     {
         $status = $request->get('status');
         $perPage = $request->get('per_page', 10);
+        $search = $request->get('search');
 
         $clientes = Clientes::query()
-            ->when($status === 'ativo', fn($q) => $q->where('status', 'ativo'))
-            ->when($status === 'inativo', fn($q) => $q->where('status', 'inativo'))
-            ->when(!$status, fn($q) => $q->where('status', 'ativo'))
-            ->paginate($perPage)
-            ->appends($request->query()); // mantém filtros
 
-        return view('cliente.index', compact('clientes', 'status'));
+            ->when($status === 'ativo', function ($q) {
+                $q->where('status', 'ativo');
+            })
+
+            ->when($status === 'inativo', function ($q) {
+                $q->where('status', 'inativo');
+            })
+
+            ->when(!$status, function ($q) {
+                $q->where('status', 'ativo');
+            })
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where(function ($query) use ($search) {
+
+                    $query->where('nome', 'ILIKE', "%{$search}%")
+                        ->orWhere('email', 'ILIKE', "%{$search}%");
+                });
+            })
+
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        return view('cliente.index', compact('clientes', 'status', 'search'));
     }
 
     /**

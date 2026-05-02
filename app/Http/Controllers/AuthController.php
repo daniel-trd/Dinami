@@ -17,7 +17,7 @@ class AuthController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
 
         if ($user && $user->status !== 'ativo') {
-            return back()->with('error', 'Usuário inativo.');
+            return back()->with('error', 'Credenciais inválidas.');
         }
 
         if (Auth::attempt([

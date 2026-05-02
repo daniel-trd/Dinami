@@ -14,14 +14,39 @@ class FornecedorController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status');
+        $perPage = $request->get('per_page', 10);
+        $search = $request->get('search');
 
         $fornecedores = Fornecedores::query()
-            ->when($status === 'ativo', fn($q) => $q->where('status', 'ativo'))
-            ->when($status === 'inativo', fn($q) => $q->where('status', 'inativo'))
-            ->when(!$status, fn($q) => $q->where('status', 'ativo'))
-            ->get();
 
-        return view('fornecedor.index', compact('fornecedores', 'status'));
+            ->when($status === 'ativo', function ($q) {
+                return $q->where('status', 'ativo');
+            })
+
+            ->when($status === 'inativo', function ($q) {
+                return $q->where('status', 'inativo');
+            })
+
+            ->when(!$status, function ($q) {
+                return $q->where('status', 'ativo');
+            })
+
+            ->when($search, function ($q) use ($search) {
+                return $q->where('nome', 'like', "%{$search}%");
+            })
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where(function ($query) use ($search) {
+
+                    $query->where('nome', 'ILIKE', "%{$search}%")
+                        ->orWhere('email', 'ILIKE', "%{$search}%");
+                });
+            })
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        return view('fornecedor.index', compact('fornecedores', 'status', 'search'));
     }
 
     /**

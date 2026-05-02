@@ -13,21 +13,30 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Rotas públicas
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Rotas protegidas
+Route::middleware('auth')->group(function () {
 
-Route::resource('contas_pagar', ContaPagarController::class);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::resource('contas_receber', ContaReceberController::class);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::resource('cliente', ClienteController::class);
-Route::patch('/cliente/{cliente}/toggle-status', [ClienteController::class, 'toggleStatus'])->name('cliente.toggleStatus');
+    Route::resource('contas_pagar', ContaPagarController::class);
 
-Route::resource('fornecedor', FornecedorController::class);
-Route::patch('/fornecedor/{fornecedor}/toggle-status', [FornecedorController::class, 'toggleStatus'])->name('fornecedor.toggleStatus');
+    Route::resource('contas_receber', ContaReceberController::class);
 
-Route::resource('configuracao.usuarios', UserController::class);
-Route::patch('/configuracao.usuarios/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('configuracao.usuarios.toggleStatus');
+    Route::resource('cliente', ClienteController::class);
+    Route::patch('/cliente/{cliente}/toggle-status', [ClienteController::class, 'toggleStatus'])
+        ->name('cliente.toggleStatus');
+
+    Route::resource('fornecedor', FornecedorController::class);
+    Route::patch('/fornecedor/{fornecedor}/toggle-status', [FornecedorController::class, 'toggleStatus'])
+        ->name('fornecedor.toggleStatus');
+
+    Route::resource('configuracao.usuarios', UserController::class);
+    Route::patch('/configuracao.usuarios/{user}/toggle-status', [UserController::class, 'toggleStatus'])
+        ->name('configuracao.usuarios.toggleStatus');
+});

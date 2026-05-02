@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro</title>
+    <title>Dinami - {{ auth()->user()->name }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -295,51 +295,159 @@
                     ☰
                 </button>
 
-                <div class="flex items-center gap-2 font-semibold">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="text-sm text-gray-600 hover:text-black">
+                        <div class="flex items-center gap-2 font-semibold">
 
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 text-gray-600"
-                        fill="none" viewBox="0 0 22 22" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5.121 17.804A10.954 10.954 0 0112 15c2.5 0 4.847.82 6.879 2.204M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-5 h-5 text-gray-600"
+                                fill="none" viewBox="0 0 22 22" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5.121 17.804A10.954 10.954 0 0112 15c2.5 0 4.847.82 6.879 2.204M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
 
-                    {{ auth()->user()->name ?? 'Usuário' }}
+                            {{ auth()->user()->name ?? 'Usuário' }}
 
-                </div>
+                        </div>
+                    </button>
+                </form>
             </header>
 
-            <div class="fixed top-5 right-5 z-50 flex flex-col gap-2 w-80">
+            <div class="fixed top-9 right-5 z-50 space-y-3">
 
+                {{-- SUCCESS --}}
                 @if(session('success'))
                 <div
-                    x-data="{ show: true }"
-                    x-init="setTimeout(() => show = false, 3000)"
+                    x-data="{
+                        show: true,
+                        timer: null,
+
+                        startTimer() {
+                            this.timer = setTimeout(() => {
+                                this.show = false
+                            }, 4000)
+                        },
+
+                        stopTimer() {
+                            clearTimeout(this.timer)
+                        }
+                    }"
+
+                    x-init="startTimer()"
+
+                    @mouseenter="stopTimer()"
+                    @mouseleave="startTimer()"
+                    @click="show = false"
+
                     x-show="show"
+
                     x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 translate-y-2"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    class="bg-slate-800 text-white px-4 py-3 rounded-lg shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <span>{{ session('success') }}</span>
-                        <button @click="show = false">✕</button>
-                    </div>
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+
+                    x-transition:leave="transition ease-in duration-500"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-90"
+
+                    class="
+                        bg-emerald-500
+                        hover:bg-emerald-600
+                        hover:scale-105
+                        active:scale-95
+
+                        text-white
+                        px-5
+                        py-3
+                        rounded-2xl
+                        shadow-2xl
+                        hover:shadow-emerald-500/40
+
+                        cursor-pointer
+                        transition-all
+                        duration-300
+
+                        min-w-[320px]
+                    ">
+                    {{ session('success') }}
                 </div>
                 @endif
 
-                @if(session('error'))
+                {{-- ERROR --}}
+                @if ($errors->any())
                 <div
-                    x-data="{ show: true }"
-                    x-init="setTimeout(() => show = false, 3000)"
+                    x-data="{
+                        show: true,
+                        timer: null,
+
+                        startTimer() {
+                            this.timer = setTimeout(() => {
+                                this.show = false
+                            }, 5000)
+                        },
+
+                        stopTimer() {
+                            clearTimeout(this.timer)
+                        }
+                    }"
+
+                    x-init="startTimer()"
+
+                    @mouseenter="stopTimer()"
+                    @mouseleave="startTimer()"
+                    @click="show = false"
+
                     x-show="show"
-                    class="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <span>{{ session('error') }}</span>
-                        <button @click="show = false">✕</button>
-                    </div>
+
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+
+                    x-transition:leave="transition ease-in duration-500"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-90"
+
+                    class="
+                        bg-red-500
+                        hover:bg-red-600
+                        hover:scale-105
+                        active:scale-95
+
+                        text-white
+                        px-5
+                        py-3
+                        rounded-2xl
+                        shadow-2xl
+                        hover:shadow-red-500/40
+
+                        cursor-pointer
+                        transition-all
+                        duration-300
+
+                        min-w-[320px]
+                    ">
+
+                    @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                    @endforeach
+
+                </div>
+                @endif
+
+                {{-- WARNING --}}
+                @if(session('warning'))
+                <div x-data="{ show: true }"
+                    x-init="setTimeout(() => show = false, 5000)"
+                    x-show="show"
+                    x-transition
+                    class="bg-yellow-500 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-4 min-w-[320px]">
+
+                    <span>{{ session('warning') }}</span>
+
+                    <button @click="show = false"
+                        class="ml-auto text-white hover:text-gray-200 text-lg">
+                        ✕
+                    </button>
                 </div>
                 @endif
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Clientes;
@@ -24,7 +25,7 @@ class PopularSistema extends Seeder
             echo "============================\n\n";
 
             // ================= USERS =================
-            $totalUsers = 10;
+            $totalUsers = 5;
             echo "👤 Criando usuários...\n";
 
             for ($i = 1; $i <= $totalUsers; $i++) {
@@ -46,7 +47,7 @@ class PopularSistema extends Seeder
 
 
             // ================= CLIENTES =================
-            $totalClientes = 10000;
+            $totalClientes = 100;
             echo "👥 Criando clientes...\n";
 
             for ($i = 1; $i <= $totalClientes; $i++) {
@@ -68,7 +69,7 @@ class PopularSistema extends Seeder
 
 
             // ================= FORNECEDORES =================
-            $totalFornecedores = 500;
+            $totalFornecedores = 10;
             echo "🏢 Criando fornecedores...\n";
 
             for ($i = 1; $i <= $totalFornecedores; $i++) {
@@ -92,7 +93,7 @@ class PopularSistema extends Seeder
 
 
             // ================= CONTAS PAGAR =================
-            $totalPagar = 25000;
+            $totalPagar = 100;
             echo "💸 Criando contas a pagar...\n";
 
             for ($i = 1; $i <= $totalPagar; $i++) {
@@ -117,7 +118,7 @@ class PopularSistema extends Seeder
 
 
             // ================= CONTAS RECEBER =================
-            $totalReceber = 30000;
+            $totalReceber = 100;
             echo "💰 Criando contas a receber...\n";
 
             for ($i = 1; $i <= $totalReceber; $i++) {
