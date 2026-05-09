@@ -12,15 +12,36 @@ class UserController extends Controller
     public function index(Request $request, $configuracao)
     {
         $status = $request->get('status');
+        $perPage = $request->get('per_page', 10);
+        $search = $request->get('search');
 
-        $usuario = User::query()
-            ->when($status === 'ativo', fn($q) => $q->where('status', 'ativo'))
-            ->when($status === 'inativo', fn($q) => $q->where('status', 'inativo'))
-            ->when(!$status, fn($q) => $q->where('status', 'ativo'))
-            ->orderBy('name', 'asc')
-            ->get();
+        $usuarios = User::query()
 
-        return view('configuracao.usuarios.index', compact('usuario', 'status', 'configuracao'));
+            ->when($status === 'ativo', function ($q) {
+                $q->where('status', 'ativo');
+            })
+
+            ->when($status === 'inativo', function ($q) {
+                $q->where('status', 'inativo');
+            })
+
+            ->when(!$status, function ($q) {
+                $q->where('status', 'ativo');
+            })
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where(function ($query) use ($search) {
+
+                    $query->where('name', 'ILIKE', "%{$search}%")
+                        ->orWhere('email', 'ILIKE', "%{$search}%");
+                });
+            })
+
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        return view('configuracao.usuarios.index', compact('usuarios', 'status', 'search', 'configuracao'));
     }
 
     /**
@@ -48,7 +69,7 @@ class UserController extends Controller
         User::create($data);
 
         return redirect()
-            ->route('cliente.index')
+            ->route('configuracao.usuarios.index', $configuracao)
             ->with('success', 'Usuário cadastrado com sucesso');
     }
 

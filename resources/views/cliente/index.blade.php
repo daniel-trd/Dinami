@@ -4,7 +4,7 @@
 
 <!-- HEADER -->
 <div class="flex justify-between items-center mb-4">
-    <h2 class="text-3xl font-bold">Clientes</h2>
+    <h2 class="text-3xl font-bold">Usuários</h2>
 </div>
 
 <!-- FILTROS -->
@@ -136,12 +136,12 @@
                     <div class="flex justify-center items-center gap-2">
 
                         <!-- Editar -->
-                        <a href="{{ route('cliente.edit', $cliente->id_cliente) }}"
+                        <a href="{{ route('cliente.edit', $cliente) }}"
                             class="bg-emerald-500 text-white px-3 py-1.5 text-sm rounded-md hover:bg-emerald-600 transition ">
                             Editar
                         </a>
 
-                        <form action="{{ route('cliente.toggleStatus', $cliente->id_cliente) }}"
+                        <form action="{{ route('cliente.toggleStatus', $cliente) }}"
                             method="POST"
                             class="inline-flex">
                             @csrf

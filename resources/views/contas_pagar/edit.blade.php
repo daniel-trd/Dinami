@@ -13,83 +13,298 @@
 
         <!-- Botão direita -->
         <div class="ml-auto">
+
             <a href="{{ route('contas_pagar.index') }}"
                 class="text-sm text-gray-500 hover:text-gray-700">
+
                 ← Voltar
+
             </a>
+
         </div>
 
     </div>
 
     <div class="bg-white rounded-2xl shadow p-6 max-w-4xl mx-auto">
 
-        <form method="POST" action="{{ route('contas_pagar.update', $contas->id_conta_pagar) }}">
+        <form method="POST"
+            action="{{ route('contas_pagar.update', $contas->id_conta_pagar) }}">
+
             @csrf
             @method('PUT')
 
             <div class="grid grid-cols-2 gap-5">
 
-                <!-- Descrição -->
+                <!-- DESCRIÇÃO -->
                 <div>
-                    <label class="block text-sm text-gray-500 mb-1">Descrição</label>
-                    <input type="text" name="descricao"
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Descrição
+                    </label>
+
+                    <input
+                        type="text"
+                        name="descricao"
                         value="{{ $contas->descricao }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
+
                 </div>
 
-                <!-- Fornecedor -->
+                <!-- FORNECEDOR -->
                 <div>
-                    <label class="block text-sm text-gray-500 mb-1">Fornecedor</label>
-                    <input type="text" name="id_fornecedor"
-                        value="{{ $contas->id_fornecedor }}"
-                        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Fornecedor
+                    </label>
+
+                    <select
+                        name="id_fornecedor"
+                        id="fornecedor-select"
+                        class="w-full">
+
+                        @if($contas->fornecedor)
+
+                        <option
+                            value="{{ $contas->fornecedor->id_fornecedor }}"
+                            selected>
+
+                            {{ $contas->fornecedor->nome }}
+
+                        </option>
+
+                        @endif
+
+                    </select>
+
                 </div>
 
-                <!-- Valor -->
+                <!-- VALOR -->
                 <div>
-                    <label class="block text-sm text-gray-500 mb-1">Valor</label>
-                    <input type="text" name="valor"
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Valor
+                    </label>
+
+                    <input
+                        type="text"
+                        name="valor"
                         value="{{ $contas->valor }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
+
                 </div>
 
-                <!-- Data -->
+                <!-- VENCIMENTO -->
                 <div>
-                    <label class="block text-sm text-gray-500 mb-1">Vencimento</label>
-                    <input type="date" name="data_vencimento"
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Vencimento
+                    </label>
+
+                    <input
+                        type="date"
+                        name="data_vencimento"
                         value="{{ optional($contas->data_vencimento)->format('Y-m-d') }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
+
                 </div>
 
-                <div>
-                    <label class="block text-sm text-gray-500 mb-1">Data de Pagamento</label>
-                    <input type="date" name="data_pagamento"
+                <!-- DATA PAGAMENTO -->
+                <div id="campo-pagamento">
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Data de Pagamento
+                    </label>
+
+                    <input
+                        type="date"
+                        name="data_pagamento"
+                        id="data_pagamento"
                         value="{{ optional($contas->data_pagamento)->format('Y-m-d') }}"
                         class="w-full border rounded-lg px-3 py-2 text-sm">
+
                 </div>
 
-                <!-- Status -->
+                <!-- STATUS -->
                 <div>
-                    <label class="block text-sm text-gray-500 mb-1">Status</label>
-                    <select name="status"
+
+                    <label class="block text-sm text-gray-500 mb-1">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        id="status"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400">
-                        <option value="pendente" {{ $contas->status == 'pendente' ? 'selected' : '' }}>Pendente</option>
-                        <option value="pago" {{ $contas->status == 'pago' ? 'selected' : '' }}>Pago</option>
+
+                        <option
+                            value="pendente"
+                            {{ $contas->status == 'pendente' ? 'selected' : '' }}>
+
+                            Pendente
+
+                        </option>
+
+                        <option
+                            value="pago"
+                            {{ $contas->status == 'pago' ? 'selected' : '' }}>
+
+                            Pago
+
+                        </option>
+
                     </select>
+
                 </div>
 
             </div>
 
-            <!-- Botão centralizado -->
+            <!-- BOTÃO -->
             <div class="flex justify-center mt-6">
+
                 <button
                     class="bg-emerald-500 text-white px-8 py-2 rounded-lg hover:bg-emerald-600 transition">
+
                     Atualizar
+
                 </button>
+
             </div>
 
         </form>
 
     </div>
 
-    @endsection
+</div>
+
+<!-- TOM SELECT -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS / PAGAMENTO
+        |--------------------------------------------------------------------------
+        */
+
+        const status = document.getElementById('status');
+
+        const campoPagamento = document.getElementById('campo-pagamento');
+
+        const inputPagamento = document.getElementById('data_pagamento');
+
+        function controlarPagamento() {
+            console.log('STATUS:', status.value);
+
+            if (status.value === 'pendente') {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Limpa pagamento
+                |--------------------------------------------------------------------------
+                */
+
+                inputPagamento.value = '';
+
+                /*
+                |--------------------------------------------------------------------------
+                | Esconde campo
+                |--------------------------------------------------------------------------
+                */
+
+                campoPagamento.style.display = 'none';
+
+            } else {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Mostra campo
+                |--------------------------------------------------------------------------
+                */
+
+                campoPagamento.style.display = 'block';
+
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Troca status
+        |--------------------------------------------------------------------------
+        */
+
+        status.addEventListener('change', controlarPagamento);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Inicialização
+        |--------------------------------------------------------------------------
+        */
+
+        controlarPagamento();
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOM SELECT FORNECEDOR
+        |--------------------------------------------------------------------------
+        */
+
+        new TomSelect("#fornecedor-select", {
+
+            valueField: 'id',
+
+            labelField: 'nome',
+
+            searchField: 'nome',
+
+            preload: true,
+
+            create: false,
+
+            load: function(query, callback) {
+                fetch(`/fornecedores/search?q=${encodeURIComponent(query)}`)
+
+                    .then(response => response.json())
+
+                    .then(json => {
+
+                        callback(json);
+
+                    })
+
+                    .catch(() => {
+
+                        callback();
+
+                    });
+            },
+
+            render: {
+
+                option: function(item, escape) {
+
+                    return `
+                    <div class="p-2">
+                        ${escape(item.nome)}
+                    </div>
+                `;
+                },
+
+                item: function(item, escape) {
+
+                    return `
+                    <div>
+                        ${escape(item.nome)}
+                    </div>
+                `;
+                }
+            }
+        });
+
+    });
+</script>
+
+@endsection

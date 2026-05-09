@@ -12,13 +12,40 @@ class ContaReceberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contas = ContasReceber::with('cliente')
-            ->orderBy('id_conta_receber', 'asc')
-            ->get();
+        $status = $request->get('status');
+        $perPage = $request->get('per_page', 10);
+        $search = $request->get('search');
 
-        return view('contas_receber.index', compact('contas'));
+        $contas = ContasReceber::query()
+
+            ->when($status === 'recebido', function ($q) {
+                $q->where('status', 'recebido');
+            })
+
+            ->when($status === 'pendente', function ($q) {
+                $q->where('status', 'pendente');
+            })
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where(function ($query) use ($search) {
+
+                    // Busca na descrição
+                    $query->where('descricao', 'ILIKE', "%{$search}%")
+
+                        // Busca no nome do cliente
+                        ->orWhereHas('cliente', function ($cliente) use ($search) {
+
+                            $cliente->where('nome', 'ILIKE', "%{$search}%");
+                        });
+                });
+            })
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        return view('contas_receber.index', compact('contas', 'status', 'search'));
     }
 
     /**

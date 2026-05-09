@@ -5,116 +5,336 @@ namespace App\Http\Controllers;
 use App\Models\ContasPagar;
 use Illuminate\Http\Request;
 use App\Models\Fornecedores;
-use PhpParser\Node\NullableType;
+use Illuminate\Validation\Rule;
 
 class ContaPagarController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * LISTAGEM
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contas = ContasPagar::with('fornecedor')
-            ->orderBy('id_conta_pagar', 'asc')
-            ->get();
+        $status = $request->get('status');
 
-        return view('contas_pagar.index', compact('contas'));
+        $perPage = $request->get('per_page', 10);
+
+        $search = $request->get('search');
+
+        $contas = ContasPagar::query()
+
+            /*
+            |--------------------------------------------------------------------------
+            | RELACIONAMENTO
+            |--------------------------------------------------------------------------
+            */
+
+            ->with('fornecedor')
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            ->when($status === 'pago', function ($q) {
+
+                $q->where('status', 'pago');
+            })
+
+            ->when($status === 'pendente', function ($q) {
+
+                $q->where('status', 'pendente');
+            })
+
+            /*
+            |--------------------------------------------------------------------------
+            | BUSCA
+            |--------------------------------------------------------------------------
+            */
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where(function ($query) use ($search) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Busca descrição
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $query->where('descricao', 'ILIKE', "%{$search}%")
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Busca fornecedor
+                        |--------------------------------------------------------------------------
+                        */
+
+                        ->orWhereHas('fornecedor', function ($fornecedor) use ($search) {
+
+                            $fornecedor->where(
+                                'nome',
+                                'ILIKE',
+                                "%{$search}%"
+                            );
+                        });
+                });
+            })
+
+            ->paginate($perPage)
+
+            ->appends($request->query());
+
+        return view(
+            'contas_pagar.index',
+            compact('contas', 'status', 'search')
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * CREATE
      */
     public function create()
     {
-        $fornecedores = Fornecedores::all();
-        return view('contas_pagar.create', compact('fornecedores'));
+        return view('contas_pagar.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * AUTOCOMPLETE FORNECEDOR
+     */
+    public function search(Request $request)
+    {
+        $search = $request->get('q');
+
+        $fornecedores = Fornecedores::query()
+
+            ->when($search, function ($q) use ($search) {
+
+                $q->where('nome', 'ILIKE', "%{$search}%");
+            })
+
+            ->limit(20)
+
+            ->get([
+                'id_fornecedor as id',
+                'nome'
+            ]);
+
+        return response()->json($fornecedores);
+    }
+
+    /**
+     * STORE
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
-            'descricao' => 'required|max:255',
-            'valor' => 'nullable',
-            'status' => 'nullable',
-            'data_vencimento' => 'nullable',
-            'data_pagamento' => 'nullable'
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDAÇÃO
+        |--------------------------------------------------------------------------
+        */
+
+        $validated = $request->validate([
+
+            'id_fornecedor' => [
+                'required',
+                'exists:fornecedor,id_fornecedor'
+            ],
+
+            'descricao' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'valor' => [
+                'required',
+                'numeric',
+                'min:0'
+            ],
+
+            'status' => [
+                'required',
+                Rule::in(['pendente', 'pago']),
+            ],
+
+            'data_vencimento' => [
+                'required',
+                'date'
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Se pago, data pagamento obrigatória
+            |--------------------------------------------------------------------------
+            */
+
+            'data_pagamento' => [
+                'nullable',
+                'date',
+                Rule::requiredIf(
+                    $request->status === 'pago'
+                ),
+            ],
+
         ]);
 
-        ContasPagar::create($request->only([
-            'id_fornecedor',
-            'descricao',
-            'valor',
-            'status',
-            'data_vencimento',
-            'data_pagamento'
-        ]));
+        /*
+        |--------------------------------------------------------------------------
+        | Se pendente, remove pagamento
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validated['status'] === 'pendente') {
+
+            $validated['data_pagamento'] = null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE
+        |--------------------------------------------------------------------------
+        */
+
+        ContasPagar::create($validated);
 
         return redirect()
+
             ->route('contas_pagar.index')
-            ->with('success', 'Conta criada com sucesso');
+
+            ->with(
+                'success',
+                'Conta criada com sucesso'
+            );
     }
 
     /**
-     * Display the specified resource.
+     * SHOW
      */
     public function show(string $id)
     {
-        $contas = ContasPagar::with('fornecedor')->findOrFail($id);
-        return view('contas_pagar.show', compact('contas'));
+        $contas = ContasPagar::with('fornecedor')
+
+            ->findOrFail($id);
+
+        return view(
+            'contas_pagar.show',
+            compact('contas')
+        );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * EDIT
      */
     public function edit(string $id)
     {
-        $contas = ContasPagar::with('fornecedor')->findOrFail($id);
-        return view('contas_pagar.edit', compact('contas'));
+        $contas = ContasPagar::with('fornecedor')
+
+            ->findOrFail($id);
+
+        return view(
+            'contas_pagar.edit',
+            compact('contas')
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * UPDATE
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'id_fornecedor' => 'required|exists:fornecedor,id_fornecedor',
-            'descricao' => 'required|max:255',
-            'valor' => 'nullable',
-            'status' => 'nullable',
-            'data_vencimento' => 'nullable',
-            'data_pagamento' => 'nullable'
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDAÇÃO
+        |--------------------------------------------------------------------------
+        */
+
+        $validated = $request->validate([
+
+            'id_fornecedor' => [
+                'required',
+                'exists:fornecedor,id_fornecedor'
+            ],
+
+            'descricao' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'valor' => [
+                'required',
+                'numeric',
+                'min:0'
+            ],
+
+            'status' => [
+                'required',
+                Rule::in(['pendente', 'pago']),
+            ],
+
+            'data_vencimento' => [
+                'required',
+                'date'
+            ],
+
+            'data_pagamento' => [
+                'nullable',
+                'date',
+                Rule::requiredIf(
+                    $request->status === 'pago'
+                ),
+            ],
+
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Se pendente, remove pagamento
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validated['status'] === 'pendente') {
+
+            $validated['data_pagamento'] = null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
         $contas = ContasPagar::findOrFail($id);
-        $contas->update($request->only([
-            'id_fornecedor',
-            'descricao',
-            'valor',
-            'status',
-            'data_vencimento',
-            'data_pagamento'
-        ]));
+
+        $contas->update($validated);
 
         return redirect()
+
             ->route('contas_pagar.index')
-            ->with('success', 'Conta a Pagar atualizada com sucesso');
+
+            ->with(
+                'success',
+                'Conta a Pagar atualizada com sucesso'
+            );
     }
 
     /**
-     * Remove the specified resource from storage.
+     * DESTROY
      */
     public function destroy(string $id)
     {
         $contas = ContasPagar::findOrFail($id);
+
         $contas->delete();
 
         return redirect()
+
             ->route('contas_pagar.index')
-            ->with('success', 'Conta a Pagar removida com sucesso');
+
+            ->with(
+                'success',
+                'Conta a Pagar removida com sucesso'
+            );
     }
 }
