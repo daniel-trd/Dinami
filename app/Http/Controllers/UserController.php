@@ -37,7 +37,7 @@ class UserController extends Controller
                         ->orWhere('email', 'ILIKE', "%{$search}%");
                 });
             })
-
+            ->orderBy('name', 'asc')
             ->paginate($perPage)
             ->appends($request->query());
 

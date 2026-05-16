@@ -176,8 +176,8 @@
                     </div>
                 </div>
 
-                <div x-data="{ 
-        openRelatorio: {{ request()->routeIs('relatorio.*') || request()->routeIs('relatorio.*') ? 'true' : 'false' }} 
+                <div x-data="{
+        openRelatorio: {{ request()->routeIs('relatorios.*') ? 'true' : 'false' }}
     }">
 
                     <button @click="openRelatorio = !openRelatorio"
@@ -191,9 +191,6 @@
                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m9 13.5 3 3m0 0 3-3m-3 3v-6m1.06-4.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
                             </svg>
-
-
-
 
                             <span>Relatórios</span>
                         </div>
@@ -211,7 +208,7 @@
                     <div x-show="openRelatorio" x-transition
                         class="ml-6 mt-1 flex flex-col border-l border-slate-700 pl-3">
 
-                        <a href="{{ route('contas_pagar.index') }}"
+                        <a href="{{ route('relatorios.financeiro.index') }}"
                             class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
 
                             <!-- Ícone -->
@@ -221,8 +218,67 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v7.5m2.25-6.466a9.016 9.016 0 0 0-3.461-.203c-.536.072-.974.478-1.021 1.017a4.559 4.559 0 0 0-.018.402c0 .464.336.844.775.994l2.95 1.012c.44.15.775.53.775.994 0 .136-.006.27-.018.402-.047.539-.485.945-1.021 1.017a9.077 9.077 0 0 1-3.461-.203M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg>
 
-
                             Financeiro
+                        </a>
+
+                        <a href="{{ route('relatorios.financeiro.listar') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-blue-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                            </svg>
+
+                            Listagem
+                        </a>
+
+                        <a href="{{ route('relatorios.financeiro.porMes') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-purple-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                            </svg>
+
+                            Por Mês
+                        </a>
+
+                        <a href="{{ route('relatorios.financeiro.porFornecedor') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-indigo-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                            </svg>
+
+                            Por Fornecedor
+                        </a>
+
+                        <a href="{{ route('relatorios.financeiro.porCliente') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-pink-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741 6.069 8.972 8.972 0 0 1-5.07-2.905 17.863 17.863 0 0 1-3.671-6.164 2.25 2.25 0 1 0-4.306 2.553A17.865 17.865 0 0 0 9.67 19.75h.008v.008h.008a2.25 2.25 0 1 0 2.25-2.25 2.25 2.25 0 0 0 0 4.5 2.25 2.25 0 1 0 0-4.5 17.848 17.848 0 0 1-4.662-6.164A2.25 2.25 0 0 0 2.671 9.157c1.905 3.409 4.287 6.291 7.04 8.563Z" />
+                            </svg>
+
+                            Por Cliente
+                        </a>
+
+                        <a href="{{ route('relatorios.financeiro.atrasos') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-red-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                            </svg>
+
+                            Atrasos
                         </a>
 
                     </div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RelatorioFinanceiroController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -39,4 +40,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('configuracao.usuarios', UserController::class);
     Route::patch('/configuracao.usuarios/{user}/toggle-status', [UserController::class, 'toggleStatus'])
         ->name('configuracao.usuarios.toggleStatus');
+
+    // Rotas de Relatórios Financeiros
+    Route::prefix('relatorios')->group(function () {
+        Route::get('/financeiro', [RelatorioFinanceiroController::class, 'index'])->name('relatorios.financeiro.index');
+        Route::get('/financeiro/listar', [RelatorioFinanceiroController::class, 'listar'])->name('relatorios.financeiro.listar');
+        Route::get('/financeiro/por-mes', [RelatorioFinanceiroController::class, 'porMes'])->name('relatorios.financeiro.porMes');
+        Route::get('/financeiro/por-fornecedor', [RelatorioFinanceiroController::class, 'porFornecedor'])->name('relatorios.financeiro.porFornecedor');
+        Route::get('/financeiro/por-cliente', [RelatorioFinanceiroController::class, 'porCliente'])->name('relatorios.financeiro.porCliente');
+        Route::get('/financeiro/atrasos', [RelatorioFinanceiroController::class, 'atrasos'])->name('relatorios.financeiro.atrasos');
+        Route::get('/financeiro/exportar-json', [RelatorioFinanceiroController::class, 'exportarJSON'])->name('relatorios.financeiro.exportarJSON');
+    });
 });
