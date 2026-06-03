@@ -16,15 +16,13 @@ return new class extends Migration
             $table->string('codigo_barras', 50)->unique();
             $table->string('nome', 100);
             $table->decimal('preco', 10, 2);
-            $table->marca('marca', 50)->nullable();
+            $table->string('marca', 50)->nullable();
             $table->text('descricao')->nullable();
             $table->string('unidade', 20);
             $table->boolean('controla_estoque')->default(true);
             $table->integer('estoque_minimo')->default(0);
             $table->integer('estoque_maximo')->default(0);
-            $table->boolean('ativo')->default(true);
-            $table->timestamp('created_at')->useCurrent();
-
+            $table->enum('status', ['ativo', 'inativo'])->default('ativo');
             $table->timestamps();
         });
     }

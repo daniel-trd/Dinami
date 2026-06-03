@@ -177,6 +177,56 @@
                 </div>
 
                 <div x-data="{
+        openEstoque: {{ request()->routeIs('estoque.*') ? 'true' : 'false' }}
+    }">
+
+                    <button @click="openEstoque = !openEstoque"
+                        class="w-full flex items-center justify-between px-4 py-2 hover:bg-slate-800 rounded-lg">
+
+                        <div class="flex items-center gap-2">
+
+                            <!-- Ícone -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-6 h-6 text-gray-400"
+                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m0 0C5.505 7.362 2.25 9.068 2.25 12m19.5 0c0 2.932-3.694 5.25-8.25 5.25s-8.25-2.318-8.25-5.25" />
+                            </svg>
+
+                            <span>Estoque</span>
+                        </div>
+
+                        <!-- Seta -->
+                        <svg :class="{ 'rotate-90': openEstoque }"
+                            class="w-4 h-4 transition-transform duration-200"
+                            fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M9 5l7 7-7 7" />
+                        </svg>
+
+                    </button>
+
+                    <div x-show="openEstoque" x-transition
+                        class="ml-6 mt-1 flex flex-col border-l border-slate-700 pl-3">
+
+                        <a href="{{ route('estoque.index') }}"
+                            class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 rounded-md">
+
+                            <!-- Ícone -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 text-emerald-400"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m0 0C5.505 7.362 2.25 9.068 2.25 12m19.5 0c0 2.932-3.694 5.25-8.25 5.25s-8.25-2.318-8.25-5.25" />
+                            </svg>
+
+                            Produtos
+                        </a>
+
+                    </div>
+                </div>
+
+                <div x-data="{
         openRelatorio: {{ request()->routeIs('relatorios.*') ? 'true' : 'false' }}
     }">
 

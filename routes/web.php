@@ -9,6 +9,7 @@ use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RelatorioFinanceiroController;
+use App\Http\Controllers\EstoqueController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -40,6 +41,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('configuracao.usuarios', UserController::class);
     Route::patch('/configuracao.usuarios/{user}/toggle-status', [UserController::class, 'toggleStatus'])
         ->name('configuracao.usuarios.toggleStatus');
+
+    // Rotas de Estoque
+    Route::resource('estoque', EstoqueController::class);
+    Route::patch('/estoque/{estoque}/toggle-status', [EstoqueController::class, 'toggleStatus'])
+        ->name('estoque.toggleStatus');
+    Route::get('/estoque/{estoque}/movimentacao', [EstoqueController::class, 'createMovimentacao'])
+        ->name('estoque.createMovimentacao');
+    Route::post('/estoque/{estoque}/movimentacao', [EstoqueController::class, 'storeMovimentacao'])
+        ->name('estoque.storeMovimentacao');
+    Route::get('/estoque/{estoque}/historico', [EstoqueController::class, 'historico'])
+        ->name('estoque.historico');
 
     // Rotas de Relatórios Financeiros
     Route::prefix('relatorios')->group(function () {
