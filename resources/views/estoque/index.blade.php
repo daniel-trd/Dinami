@@ -1,198 +1,124 @@
 @extends('layouts.app')
 
+@section('page-title', 'Estoque - Produtos')
+
 @section('content')
 
-<!-- HEADER -->
-<div class="flex justify-between items-center mb-4">
-    <h2 class="text-3xl font-bold">Estoque - Produtos</h2>
-</div>
+<div class="space-y-6">
 
-<!-- FILTROS -->
-<div class="bg-white p-4 rounded-xl shadow mb-6">
+    <!-- Header com Filtros -->
+    <div class="bg-white rounded-xl shadow">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center gap-4">
 
-    <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-1">
+                <!-- Busca -->
+                <form method="GET" action="{{ route('estoque.index') }}" class="flex-1 max-w-md">
+                    <div class="relative">
+                        <input type="text" name="search" placeholder="Buscar produto..." value="{{ request('search') }}"
+                            class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </form>
 
-        <!-- ESQUERDA -->
-        <div class="flex items-center gap-4">
-
-            <span class="text-sm text-gray-600 font-medium">
-                Filtrar por:
-            </span>
-
-            <div class="flex items-center gap-2">
-
-                <a href="{{ route('estoque.index', ['status' => 'todos']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'todos' ? 'bg-gray-500 text-white' : 'bg-gray-100' }}">
-                    Todos
-                </a>
-
-                <a href="{{ route('estoque.index') }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ !$status ? 'bg-emerald-500 text-white' : 'bg-gray-100' }}">
-                    Ativos
-                </a>
-
-                <a href="{{ route('estoque.index', ['status' => 'inativo']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'inativo' ? 'bg-red-500 text-white' : 'bg-gray-100' }}">
-                    Inativos
-                </a>
-
-                <span class="text-gray-300">|</span>
-
-                <a href="{{ route('estoque.index', ['estoque' => 'baixo']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $estoque == 'baixo' ? 'bg-yellow-500 text-white' : 'bg-gray-100' }}">
-                    Estoque Baixo
-                </a>
-
-                <a href="{{ route('estoque.index', ['estoque' => 'alto']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $estoque == 'alto' ? 'bg-blue-500 text-white' : 'bg-gray-100' }}">
-                    Estoque Alto
-                </a>
-
+                <!-- Filtros -->
+                <div class="flex gap-2">
+                    <a href="{{ route('estoque.index', ['status' => 'ativo']) }}"
+                        class="px-4 py-2 text-sm rounded-lg transition {{ request('status') === 'ativo' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                        Ativos
+                    </a>
+                    <a href="{{ route('estoque.index', ['estoque' => 'baixo']) }}"
+                        class="px-4 py-2 text-sm rounded-lg transition {{ request('estoque') === 'baixo' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                        Estoque Baixo
+                    </a>
+                </div>
             </div>
 
-        </div>
-
-        <!-- CENTRO -->
-        <div class="flex-1 flex justify-center mr-20">
-
-            <form method="GET" action="{{ route('estoque.index') }}">
-
-                <div class="relative">
-
-                    <!-- Ícone -->
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-
-                        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-
-                    </div>
-
-                    <!-- Input -->
-                    <input type="text" name="search" placeholder="Buscar por nome, código ou marca..."
-                        value="{{ request('search') }}"
-                        class="w-[450px] bg-gray-100 border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm shadow-sm
-                   hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition
-                   focus:bg-white focus:border-emerald-500">
-
-                </div>
-
-            </form>
-
-        </div>
-
-        <!-- DIREITA -->
-        <div>
-
-            <a href="{{ route('estoque.create') }}"
-                class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 whitespace-nowrap">
-                + Novo Produto
+            <a href="{{ route('estoque.create') }}" class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Novo Produto
             </a>
 
         </div>
-
     </div>
 
-</div>
-
-<div class="bg-white rounded-2xl shadow overflow-hidden">
-
-    <table class="w-full text-sm">
-        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-            <tr>
-                <th class="p-4 text-left">Código</th>
-                <th class="p-4 text-left">Nome do Produto</th>
-                <th class="p-4 text-center">Marca</th>
-                <th class="p-4 text-center">Preço</th>
-                <th class="p-4 text-center">Unidade</th>
-                <th class="p-4 text-center">Estoque</th>
-                <th class="p-4 text-center">Mín/Máx</th>
-                <th class="p-4 text-center">Status</th>
-                <th class="p-4 text-center">Ações</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse($produtos as $produto)
-            <tr class="border-t hover:bg-gray-50">
-
-                <td class="p-4 text-left font-mono text-xs">{{ $produto->codigo_barras }}</td>
-
-                <td class="p-4 text-left">
-                    <a href="{{ route('estoque.show', $produto) }}" class="text-emerald-600 hover:text-emerald-700">
-                        {{ $produto->nome }}
-                    </a>
-                </td>
-
-                <td class="p-4 text-center">{{ $produto->marca ?? '-' }}</td>
-
-                <td class="p-4 text-center font-semibold">R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
-
-                <td class="p-4 text-center">{{ $produto->unidade }}</td>
-
-                <td class="p-4 text-center">
-                    @php
-                        $saldo = $produto->estoques()->sum('quantidade');
-                        $classe = $saldo < $produto->estoque_minimo ? 'text-red-600 font-semibold' : ($saldo > $produto->estoque_maximo ? 'text-blue-600' : 'text-green-600');
-                    @endphp
-                    <span class="{{ $classe }}">{{ $saldo }} {{ $produto->unidade }}</span>
-                </td>
-
-                <td class="p-4 text-center text-gray-600">
-                    {{ $produto->estoque_minimo }}/{{ $produto->estoque_maximo }}
-                </td>
-
-                <td class="p-4 text-center">
-                    @if($produto->status == 'ativo')
-                    <span class="text-green-600 font-semibold">Ativo</span>
-                    @else
-                    <span class="text-red-500 font-semibold">Inativo</span>
-                    @endif
-                </td>
-
-                <td class="p-4 text-center">
-                    <div class="flex justify-center items-center gap-2">
-
-                        <!-- Ver -->
-                        <a href="{{ route('estoque.show', $produto) }}"
-                            class="bg-blue-500 text-white px-2 py-1 text-xs rounded hover:bg-blue-600 transition">
-                            Ver
+    <!-- Tabela -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">CÓDIGO</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">PRODUTO</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">MARCA</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700">PREÇO</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700">ESTOQUE</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700">STATUS</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700">AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse($produtos as $produto)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <p class="text-xs font-mono text-gray-600">{{ $produto->codigo_barras }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="{{ route('estoque.show', $produto) }}" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+                            {{ $produto->nome }}
                         </a>
-
-                        <!-- Editar -->
-                        <a href="{{ route('estoque.edit', $produto) }}"
-                            class="bg-emerald-500 text-white px-2 py-1 text-xs rounded-md hover:bg-emerald-600 transition">
-                            Editar
-                        </a>
-
-                        <!-- Toggle Status -->
-                        <form action="{{ route('estoque.toggleStatus', $produto) }}" method="POST" class="inline">
-                            @csrf
-                            @method('PATCH')
-
-                            <button type="submit"
-                                class="bg-yellow-500 text-white px-2 py-1 text-xs rounded hover:bg-yellow-600 transition">
-                                {{ $produto->status === 'ativo' ? 'Desativar' : 'Ativar' }}
-                            </button>
-                        </form>
-
-                    </div>
-                </td>
-
-            </tr>
-            @empty
-            <tr>
-                <td colspan="9" class="p-8 text-center text-gray-500">
-                    Nenhum produto encontrado
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-600">{{ $produto->marca ?? '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <p class="text-sm font-semibold text-gray-900">R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        @php
+                            $saldo = $produto->estoques()->sum('quantidade');
+                            $classe = $saldo < $produto->estoque_minimo ? 'text-red-600' : ($saldo > $produto->estoque_maximo ? 'text-blue-600' : 'text-green-600');
+                        @endphp
+                        <p class="text-sm font-semibold {{ $classe }}">{{ $saldo }} {{ $produto->unidade }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        @if($produto->status === 'ativo')
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">✓ Ativo</span>
+                        @else
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">✕ Inativo</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('estoque.show', $produto) }}" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition" title="Detalhes">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </a>
+                            <a href="{{ route('estoque.edit', $produto) }}" class="p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                        <p class="text-sm">Nenhum produto encontrado</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <!-- Paginação -->
-    <div class="px-4 py-3 border-t">
+    <div class="px-6">
         {{ $produtos->links() }}
     </div>
 

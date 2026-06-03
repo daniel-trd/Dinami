@@ -1,238 +1,113 @@
 @extends('layouts.app')
 
+@section('page-title', 'Contas a Pagar')
+
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold">Contas a Pagar</h2>
-</div>
+<div class="space-y-6">
 
-<div class="bg-white p-4 rounded-xl shadow mb-6">
+    <!-- Header com Filtros -->
+    <div class="bg-white rounded-xl shadow">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center gap-4">
 
-    <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-1">
+                <!-- Busca -->
+                <form method="GET" action="{{ route('contas_pagar.index') }}" class="flex-1 max-w-md">
+                    <div class="relative">
+                        <input type="text" name="search" placeholder="Buscar conta..." value="{{ request('search') }}"
+                            class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </form>
 
-        <!-- ESQUERDA -->
-        <div class="flex items-center gap-4">
-
-            <span class="text-sm text-gray-600 font-medium">
-                Filtrar por:
-            </span>
-
-            <div class="flex items-center gap-2">
-
-                <a href="{{ route('contas_pagar.index', ['status' => 'pago']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'pago' ? 'bg-green-500 text-white' : 'bg-gray-100' }}">
-                    Pagas
-                </a>
-
-                <a href="{{ route('contas_pagar.index', ['status' => 'pendente']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'pendente' ? 'bg-yellow-500 text-white' : 'bg-gray-100' }}">
-                    Pendentes
-                </a>
-
+                <!-- Filtros de Status -->
+                <div class="flex gap-2">
+                    <a href="{{ route('contas_pagar.index', ['status' => 'pendente']) }}"
+                        class="px-4 py-2 text-sm rounded-lg transition {{ !request('status') ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                        Pendentes
+                    </a>
+                    <a href="{{ route('contas_pagar.index', ['status' => 'pago']) }}"
+                        class="px-4 py-2 text-sm rounded-lg transition {{ request('status') === 'pago' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                        Pagas
+                    </a>
+                </div>
             </div>
 
-        </div>
-
-        <!-- CENTRO -->
-        <div class="flex-1 flex justify-center">
-
-            <form method="GET" action="{{ route('contas_pagar.index') }}">
-
-                <div class="relative">
-
-                    <!-- Ícone -->
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-
-                        <svg
-                            class="w-5 h-5 text-emerald-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24">
-
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-
-                        </svg>
-
-                    </div>
-
-                    <!-- Input -->
-                    <input
-                        type="text"
-                        name="search"
-                        placeholder="Buscar conta a pagar..."
-                        value="{{ request('search') }}"
-                        class="w-[450px] bg-gray-100 border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm shadow-sm
-                        hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition
-                        focus:bg-white focus:border-emerald-500">
-
-                </div>
-
-            </form>
-
-        </div>
-
-        <!-- DIREITA -->
-        <div>
-
-            <a href="{{ route('contas_pagar.create') }}"
-                class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 whitespace-nowrap">
-                + Nova Conta
+            <a href="{{ route('contas_pagar.create') }}" class="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Nova Conta
             </a>
 
         </div>
-
     </div>
 
-</div>
+    <!-- Tabela -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">FORNECEDOR</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">VALOR</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">VENCIMENTO</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">PAGAMENTO</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700">STATUS</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700">AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse($contas as $conta)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <p class="text-sm font-medium text-gray-900">{{ $conta->fornecedor->nome ?? 'N/A' }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm font-semibold text-red-600">R$ {{ number_format($conta->valor, 2, ',', '.') }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        @php
+                            $vencimento = $conta->data_vencimento;
+                            $classe = ($vencimento && $vencimento < now() && $conta->status !== 'pago') ? 'text-red-600' : 'text-gray-600';
+                        @endphp
+                        <p class="text-sm {{ $classe }}">{{ $vencimento ? $vencimento->format('d/m/Y') : '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-600">{{ $conta->data_pagamento ? $conta->data_pagamento->format('d/m/Y') : '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        @if($conta->status === 'pago')
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">✓ Pago</span>
+                        @else
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">⏱ Pendente</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('contas_pagar.edit', $conta) }}" class="p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <p class="text-sm">Nenhuma conta encontrada</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
-<div class="bg-white rounded-2xl shadow overflow-hidden">
-
-    <table class="w-full text-sm">
-        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-            <tr>
-                <th class="p-4 text-center">ID</th>
-                <th class="p-4 text-center">Descrição</th>
-                <th class="p-4 text-center">Valor</th>
-                <th class="p-4 text-center">Fornecedor</th>
-                <th class="p-4 text-center">Vencimento</th>
-                <th class="p-4 text-center">Data Cadastro</th>
-                <th class="p-4 text-center">Data Pagamento</th>
-                <th class="p-4 text-center">Status</th>
-                <th class="p-4 text-center">Ações</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse($contas as $conta)
-            <tr class="border-t hover:bg-gray-50">
-
-                <td class="p-4 text-center">{{ $conta->id_conta_pagar }}</td>
-
-                <td class="p-4 text-center">{{ $conta->descricao }}</td>
-
-                <td class="p-4 text-red-600 font-semibold text-center">
-                    R$ {{ number_format($conta->valor, 2, ',', '.') }}
-                </td>
-
-                <td class="p-4 text-center">{{ $conta->fornecedor->nome ?? '-' }}</td>
-
-                <td class="p-4 text-center">
-                    {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : '-' }}
-                </td>
-
-                <td class="p-4 text-center">
-                    {{ $conta->data_cadastro ? date('d/m/Y', strtotime($conta->data_cadastro)) : '-' }}
-                </td>
-
-                <td class="p-4 text-center">
-                    {{ $conta->data_pagamento ? date('d/m/Y', strtotime($conta->data_pagamento)) : '-' }}
-                </td>
-
-                <td class="p-4 text-center">
-                    @if($conta->status == 'pago')
-                    <span class="text-green-600 font-semibold">Pago</span>
-                    @else
-                    <span class="text-yellow-500 font-semibold">Pendente</span>
-                    @endif
-                </td>
-
-                <td class="p-4 text-center">
-                    <div class="flex justify-center items-center gap-2">
-
-                        <!-- Editar -->
-                        <a href="{{ route('contas_pagar.edit', $conta->id_conta_pagar) }}"
-                            class="bg-emerald-500 text-white px-3 py-1.5 text-sm rounded-md hover:bg-emerald-600 transition ">
-                            Editar
-                        </a>
-
-                        <!-- Excluir -->
-                        <form action="{{ route('contas_pagar.destroy', $conta->id_conta_pagar) }}"
-                            method="POST"
-                            class="inline-flex">
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="bg-red-500 text-white px-3 py-1.5 text-sm rounded-md">
-                                Excluir
-                            </button>
-                        </form>
-
-                    </div>
-                </td>
-
-            </tr>
-            @empty
-            <tr>
-                <td colspan="9" class="p-6 text-center text-gray-400">
-                    Nenhuma conta cadastrada
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="p-4 border-t bg-gray-100 text-gray-600">
-
-        <div class="grid grid-cols-3 items-center">
-
-            <!-- ESQUERDA -->
-            <div class="flex items-center gap-2">
-
-                <form method="GET" class="flex items-center gap-2">
-
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-
-                    <label class="text-sm hidden sm:block">
-                        Por página:
-                    </label>
-
-                    <select
-                        name="per_page"
-                        onchange="this.form.submit()"
-                        class="appearance-none bg-white border rounded-lg px-3 py-1.5 text-sm shadow-sm
-                           hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
-
-                        @foreach([10,15,20,50,75] as $qtd)
-
-                        <option value="{{ $qtd }}"
-                            {{ request('per_page',10) == $qtd ? 'selected' : '' }}>
-
-                            {{ $qtd }}
-
-                        </option>
-
-                        @endforeach
-
-                    </select>
-
-                </form>
-
-            </div>
-
-            <!-- CENTRO -->
-            <div class="flex justify-center">
-                {{ $contas->links() }}
-            </div>
-
-            <!-- DIREITA -->
-            <div class="flex justify-end">
-
-                <span class="text-sm text-gray-500 hidden sm:block">
-
-                    Mostrando <strong>{{ $contas->firstItem() }}</strong>
-                    até <strong>{{ $contas->lastItem() }}</strong>
-                    de <strong>{{ $contas->total() }}</strong> registros
-
-                </span>
-
-            </div>
-
-        </div>
-
+    <!-- Paginação -->
+    <div class="px-6">
+        {{ $contas->links() }}
     </div>
 
 </div>
