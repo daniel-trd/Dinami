@@ -3,12 +3,12 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16
-    container_name: meu-postgres
+    container_name: gestao
     restart: always
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: meubanco
+      POSTGRES_PASSWORD: 6a5Y^t\M5iv5'f4iiVTyR!d67
+      POSTGRES_DB: gestaoAdm
     ports:
       - "5432:5432"
     volumes:

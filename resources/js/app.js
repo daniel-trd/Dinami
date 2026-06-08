@@ -1,9 +1,14 @@
 import './bootstrap';
 import Chart from 'chart.js/auto';
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+
+window.flatpickr = flatpickr;
 
 document.addEventListener("DOMContentLoaded", function () {
 
     const ctx = document.getElementById('graficoFluxo');
+
 
     if (ctx) {
         new Chart(ctx, {

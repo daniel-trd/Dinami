@@ -80,7 +80,11 @@
         <tbody>
             @forelse($dados as $item)
             <tr class="border-t hover:bg-gray-50">
-                <td class="p-4">{{ $item->id_conta_{{ $tipo === 'receber' ? 'receber' : 'pagar' }} ?? $item->id }}</td>
+                <td class="p-4">
+                    {{ $tipo === 'receber'
+                    ? ($item->id_conta_receber ?? $item->id)
+                    : ($item->id_conta_pagar ?? $item->id) }}
+                </td>
                 <td class="p-4">
                     @if($tipo === 'receber' && $item->cliente)
                         {{ $item->cliente->nome_cliente ?? 'N/A' }}
