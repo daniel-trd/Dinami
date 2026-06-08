@@ -15,7 +15,7 @@
 
             <!-- Logo -->
             <div class="text-center mb-6">
-                <h1 class="text-3xl font-bold text-emerald-500">Dinami</h1>
+                <h1 class="text-3xl font-bold text-emerald-500">Gestão</h1>
                 <p class="text-gray-500 text-sm">Acesse sua conta</p>
             </div>
 

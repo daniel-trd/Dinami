@@ -39,7 +39,7 @@
             @forelse($dados as $item)
             <tr class="border-t hover:bg-gray-50">
                 <td class="p-4 font-semibold">
-                    {{ $item->fornecedor->nome_fornecedor ?? 'N/A' }}
+                    {{ $item->fornecedor->nome ?? 'N/A' }}
                 </td>
                 <td class="p-4 text-center">{{ $item->quantidade }}</td>
                 <td class="p-4 text-center">
@@ -48,7 +48,9 @@
                 <td class="p-4 text-center font-bold">R$ {{ number_format($item->total, 2, ',', '.') }}</td>
                 <td class="p-4 text-center">
                     @php
-                        $percentual = ($item->total / $totais['total']) * 100;
+                    $percentual = !empty($totais['total'])
+                    ? ($item->total / $totais['total']) * 100
+                    : 0;
                     @endphp
                     <span class="text-purple-600 font-semibold">{{ number_format($percentual, 2, ',', '.') }}%</span>
                 </td>

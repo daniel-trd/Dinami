@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinami - {{ auth()->user()->name }}</title>
+    <title>Gestão - {{ auth()->user()->name }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,7 +19,7 @@
 
             <!-- Logo -->
             <div class="px-6 py-8 border-b border-slate-700">
-                <h1 class="text-2xl font-bold text-emerald-400">🚀 Dinami</h1>
+                <h1 class="text-2xl font-bold text-emerald-400">🚀 Gestão</h1>
                 <p class="text-xs text-gray-400 mt-2">Sistema de Gestão</p>
             </div>
 

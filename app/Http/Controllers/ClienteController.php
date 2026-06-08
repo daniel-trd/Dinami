@@ -17,6 +17,21 @@ class ClienteController extends Controller
         $perPage = $request->get('per_page', 10);
         $search = $request->get('search');
 
+        $dataInicio = $request->get('data_cadastro_inicio');
+        $dataFim = $request->get('data_cadastro_fim');
+
+        if ($dataInicio && $dataFim && $dataInicio > $dataFim) {
+
+            return redirect()
+                ->route('cliente.index', collect($request->query())
+                    ->except([
+                        'data_cadastro_inicio',
+                        'data_cadastro_fim'
+                    ])
+                    ->toArray())
+                ->with('error', 'A data final deve ser maior ou igual à data inicial.');
+        }
+
         $clientes = Clientes::query()
 
             ->when($status === 'ativo', function ($q) {
@@ -40,10 +55,19 @@ class ClienteController extends Controller
                 });
             })
 
+            ->when($dataInicio, function ($q) use ($dataInicio) {
+                $q->whereDate('data_cadastro', '>=', $dataInicio);
+            })
+
+            ->when($dataFim, function ($q) use ($dataFim) {
+                $q->whereDate('data_cadastro', '<=', $dataFim);
+            })
+
+            ->orderBy('nome')
             ->paginate($perPage)
             ->appends($request->query());
 
-        return view('cliente.index', compact('clientes', 'status', 'search'));
+        return view('cliente.index', compact('clientes', 'status', 'search', 'dataInicio', 'dataFim'));
     }
 
     /**

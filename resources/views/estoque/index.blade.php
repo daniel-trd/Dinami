@@ -78,16 +78,16 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @php
-                            $saldo = $produto->estoques()->sum('quantidade');
-                            $classe = $saldo < $produto->estoque_minimo ? 'text-red-600' : ($saldo > $produto->estoque_maximo ? 'text-blue-600' : 'text-green-600');
-                        @endphp
-                        <p class="text-sm font-semibold {{ $classe }}">{{ $saldo }} {{ $produto->unidade }}</p>
+                        $saldo = $produto->estoques()->sum('quantidade');
+                        $classe = $saldo < $produto->estoque_minimo ? 'text-red-600' : ($saldo > $produto->estoque_maximo ? 'text-blue-600' : 'text-green-600');
+                            @endphp
+                            <p class="text-sm font-semibold {{ $classe }}">{{ $saldo }} {{ $produto->unidade }}</p>
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($produto->status === 'ativo')
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">✓ Ativo</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">✓ Ativo</span>
                         @else
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">✕ Inativo</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">✕ Inativo</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">
@@ -98,11 +98,84 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </a>
-                            <a href="{{ route('estoque.edit', $produto) }}" class="p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                            </a>
+                            <div x-data="{ openMenu: false, openDelete: false }" class="relative inline-block">
+
+                                <!-- Botão de ações -->
+                                <button
+                                    @click="openMenu = !openMenu"
+                                    class="p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+
+                                <!-- Menu Dropdown -->
+                                <div
+                                    x-show="openMenu"
+                                    @click.away="openMenu = false"
+                                    x-transition
+                                    class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-40">
+                                    <!-- Editar -->
+                                    <button
+                                        href="{{ route('estoque.edit', $produto) }}"
+                                        class="w-full text-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600">
+                                        Editar
+                                    </button>
+
+                                    <!-- Excluir -->
+                                    <button
+                                        @click="openDelete = true; openMenu = false;"
+                                        class="w-full text-center px-4 py-2 text-sm text-gray-600 hover:bg-red-50 hover:text-red-600">
+                                        Excluir
+                                    </button>
+                                </div>
+
+                                <!-- Modal de confirmação -->
+                                <div
+                                    x-show="openDelete"
+                                    x-transition
+                                    class="fixed inset-0 z-50 flex items-center justify-center"
+                                    style="display: none;">
+                                    <!-- Fundo escuro -->
+                                    <div
+                                        class="absolute inset-0 bg-black/50"
+                                        @click="openDelete = false"></div>
+
+                                    <!-- Caixa do modal -->
+                                    <div
+                                        class="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+                                        <h2 class="text-lg font-semibold text-gray-800 text-center">
+                                            Deseja excluir esse produto?
+                                        </h2>
+
+                                        <p class="mt-2 text-sm text-gray-600 text-left">
+                                            Tem certeza que deseja excluir este produto?
+                                            Esta ação não poderá ser desfeita.
+                                        </p>
+
+                                        <div class="mt-6 flex justify-center gap-3">
+                                            <button
+                                                @click="openDelete = false"
+                                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                                                Cancelar
+                                            </button>
+
+                                            <form
+                                                action="{{ route('estoque.destroy', $produto) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    type="submit"
+                                                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                                    Confirmar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 </tr>

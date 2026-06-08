@@ -40,7 +40,7 @@
                 @forelse($pagosAtrasados as $item)
                 <tr class="border-t hover:bg-gray-50">
                     <td class="p-4 font-semibold">
-                        {{ $item->fornecedor->nome_fornecedor ?? 'N/A' }}
+                        {{ $item->fornecedor->nome ?? 'N/A' }}
                     </td>
                     <td class="p-4">{{ $item->descricao }}</td>
                     <td class="p-4 text-center font-bold text-red-600">R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
@@ -49,7 +49,7 @@
                     </td>
                     <td class="p-4 text-center">
                         <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            {{ $item->data_vencimento ? now()->diffInDays($item->data_vencimento, false) : '-' }} dias
+                            {{ $item->data_vencimento ? (int) now()->diffInDays($item->data_vencimento, false) : '-' }} dias
                         </span>
                     </td>
                 </tr>
@@ -81,7 +81,7 @@
                 @forelse($recebimentosAtrasados as $item)
                 <tr class="border-t hover:bg-gray-50">
                     <td class="p-4 font-semibold">
-                        {{ $item->cliente->nome_cliente ?? 'N/A' }}
+                        {{ $item->cliente->nome ?? 'N/A' }}
                     </td>
                     <td class="p-4">{{ $item->descricao }}</td>
                     <td class="p-4 text-center font-bold text-red-600">R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
@@ -90,7 +90,7 @@
                     </td>
                     <td class="p-4 text-center">
                         <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            {{ $item->data_vencimento ? now()->diffInDays($item->data_vencimento, false) : '-' }} dias
+                            {{ $item->data_vencimento ? (int) now()->diffInDays($item->data_vencimento, false) : '-' }} dias
                         </span>
                     </td>
                 </tr>

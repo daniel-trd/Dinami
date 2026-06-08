@@ -1,233 +1,187 @@
 @extends('layouts.app')
 
+@section('page-title', 'Fornecedores')
+
 @section('content')
 
-<!-- HEADER -->
-<div class="flex justify-between items-center mb-4">
-    <h2 class="text-3xl font-bold">Fornecedores</h2>
-</div>
+<div class="space-y-6">
 
-<!-- FILTROS -->
-<div class="bg-white p-4 rounded-xl shadow mb-6">
+    <!-- Header com Filtros Colapsáveis -->
+    <div class="bg-white rounded-xl shadow">
 
-    <div class="flex items-center justify-between gap-4">
+        <!-- Barra de Ações -->
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
 
-        <!-- ESQUERDA -->
-        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 flex-1">
+                <!-- Buscador -->
+                <form method="GET" action="{{ route('fornecedor.index') }}" class="flex-1 max-w-md">
+                    <div class="relative">
+                        <input type="text" name="search" placeholder="Buscar fornecedor..." value="{{ request('search') }}"
+                            class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </form>
 
-            <span class="text-sm text-gray-600 font-medium">
-                Filtrar por:
-            </span>
+                <!-- Filtros -->
+                <div x-data="{ open: false }" class="relative">
 
-            <div class="flex items-center gap-2">
-
-                <a href="{{ route('fornecedor.index', ['status' => 'todos']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'todos' ? 'bg-gray-500 text-white' : 'bg-gray-100' }}">
-                    Todos
-                </a>
-
-                <a href="{{ route('fornecedor.index') }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ !$status ? 'bg-emerald-500 text-white' : 'bg-gray-100' }}">
-                    Ativos
-                </a>
-
-                <a href="{{ route('fornecedor.index', ['status' => 'inativo']) }}"
-                    class="px-3 py-1.5 rounded-md text-sm {{ $status == 'inativo' ? 'bg-red-500 text-white' : 'bg-gray-100' }}">
-                    Inativos
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- CENTRO -->
-        <div class="flex-1 flex justify-center mr-20">
-
-            <form method="GET" action="{{ route('fornecedor.index') }}">
-
-                <div class="relative">
-
-                    <!-- Ícone -->
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-
-                        <svg
-                            class="w-5 h-5 text-emerald-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24">
-
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-
+                    <button
+                        @click="open = !open"
+                        class="flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                         </svg>
 
+                        <span class="text-sm">Filtros</span>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        @click.away="open = false"
+                        x-transition
+                        class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border p-4 z-50">
+                        <form method="GET">
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Status
+                                </label>
+
+                                <select
+                                    name="status"
+                                    class="w-full border rounded-lg px-3 py-2">
+                                    <option value="">Todos</option>
+                                    <option value="ativo">Ativo</option>
+                                    <option value="inativo">Inativo</option>
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <a
+                                    href="{{ route('fornecedor.index') }}"
+                                    class="px-4 py-2 text-sm bg-gray-100 rounded-lg">
+                                    Limpar
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg">
+                                    Aplicar
+                                </button>
+                            </div>
+
+                        </form>
                     </div>
 
-                    <!-- Input -->
-                    <input
-                        type="text"
-                        name="search"
-                        placeholder="Buscar fornecedor..."
-                        value="{{ request('search') }}"
-                        class="w-[450px] bg-gray-100 border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm shadow-sm
-               hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition
-               focus:bg-white focus:border-emerald-500">
-
                 </div>
+            </div>
 
-            </form>
-
-        </div>
-
-        <!-- DIREITA -->
-        <div>
-
-            <a href="{{ route('fornecedor.create') }}"
-                class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 whitespace-nowrap">
-                + Novo Fornecedor
+            <!-- Botão Novo -->
+            <a href="{{ route('fornecedor.create') }}" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Novo Fornecedor
             </a>
 
         </div>
 
+        <!-- Tags de Filtros Ativos -->
+        @if(request('status') || request('search'))
+        <div class="px-6 py-3 border-b border-gray-200 flex items-center gap-2 flex-wrap">
+            @if(request('search'))
+            <span class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+                🔍 {{ request('search') }}
+            </span>
+            @endif
+            @if(request('status'))
+            <span class="inline-flex items-center gap-2 px-3 py-1 {{ request('status') === 'ativo' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' }} rounded-full text-sm">
+                {{ request('status') === 'ativo' ? '✓ Ativos' : '✕ Inativos' }}
+            </span>
+            @endif
+            <a href="{{ route('fornecedor.index') }}" class="text-xs text-gray-500 hover:text-gray-700">Limpar filtros</a>
+        </div>
+        @endif
+
     </div>
 
-</div>
+    <!-- Tabela de Fornecedores -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
 
-<div class="bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">NOME</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">EMAIL</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">TELEFONE</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700">CADASTRO</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700">STATUS</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700">AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse($fornecedores as $fornecedor)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <p class="text-sm font-medium text-gray-900">{{ $fornecedor->nome }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-600">{{ $fornecedor->email ?? '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-600">{{ $fornecedor->telefone ?? '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-600">{{ $fornecedor->data_cadastro ? $fornecedor->data_cadastro->format('d/m/Y') : '-' }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        @if($fornecedor->status === 'ativo')
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">✓ Ativo</span>
+                        @else
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">✕ Inativo</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('fornecedor.edit', $fornecedor) }}" class="p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </a>
+                            <form action="{{ route('fornecedor.toggleStatus', $fornecedor) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="p-2 text-gray-600 hover:bg-yellow-50 hover:text-yellow-600 rounded-lg transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        <p>Nenhum fornecedor encontrado</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-    <table class="w-full text-sm">
-        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-            <tr>
-                <th class="p-4 text-center">Fornecedor</th>
-                <th class="p-4 text-center">Email</th>
-                <th class="p-4 text-center">Telefone</th>
-                <th class="p-4 text-center">Data Cadastro</th>
-                <th class="p-4 text-center">Status</th>
-                <th class="p-4 text-center">Ações</th>
-            </tr>
-        </thead>
+    </div>
 
-        <tbody>
-            @forelse($fornecedores as $fornecedor)
-            <tr class="border-t hover:bg-gray-50">
-
-                <td class="p-4 text-center">{{ $fornecedor->nome }}</td>
-
-                <td class="p-4 text-center">{{ $fornecedor->email ?? '-' }}</td>
-
-                <td class="p-4 text-center">{{ $fornecedor->telefone ?? '-' }}</td>
-
-                <td class="p-4 text-center">
-                    {{ $fornecedor->data_cadastro ? date('d/m/Y', strtotime($fornecedor->data_cadastro)) : '-' }}
-                </td>
-
-                <td class="p-4 text-center">
-                    @if($fornecedor->status == 'ativo')
-                    <span class="text-green-600 font-semibold">Ativo</span>
-                    @else
-                    <span class="text-red-500 font-semibold">Inativo</span>
-                    @endif
-                </td>
-
-                <td class="p-4 text-center">
-                    <div class="flex justify-center items-center gap-2">
-
-                        <!-- Editar -->
-                        <a href="{{ route('fornecedor.edit', $fornecedor->id_fornecedor) }}"
-                            class="bg-emerald-500 text-white px-3 py-1.5 text-sm rounded-md hover:bg-emerald-600 transition ">
-                            Editar
-                        </a>
-
-                        <form action="{{ route('fornecedor.toggleStatus', $fornecedor->id_fornecedor) }}"
-                            method="POST"
-                            class="inline-flex">
-                            @csrf
-                            @method('PATCH')
-
-                            <button
-                                class="px-3 py-1.5 text-sm rounded-md text-white
-                                {{ $fornecedor->status === 'ativo' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
-
-                                {{ $fornecedor->status === 'ativo' ? 'Inativar' : 'Ativar' }}
-
-                            </button>
-                        </form>
-
-                    </div>
-                </td>
-
-            </tr>
-            @empty
-            <tr>
-                <td colspan="9" class="p-6 text-center text-gray-400">
-                    Nenhum fornecedor encontrado
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="p-4 border-t bg-gray-100 text-gray-600">
-
-        <div class="grid grid-cols-3 items-center">
-
-            <!-- ESQUERDA -->
-            <div class="flex items-center gap-2">
-
-                <form method="GET" class="flex items-center gap-2">
-
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-
-                    <label class="text-sm hidden sm:block">
-                        Por página:
-                    </label>
-
-                    <select
-                        name="per_page"
-                        onchange="this.form.submit()"
-                        class="appearance-none bg-white border rounded-lg px-3 py-1.5 text-sm shadow-sm
-                           hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
-
-                        @foreach([10,15,20,50,75] as $qtd)
-
-                        <option value="{{ $qtd }}"
-                            {{ request('per_page',10) == $qtd ? 'selected' : '' }}>
-
-                            {{ $qtd }}
-
-                        </option>
-
-                        @endforeach
-
-                    </select>
-
-                </form>
-
-            </div>
-
-            <!-- CENTRO -->
-            <div class="flex justify-center">
-                {{ $fornecedores->links() }}
-            </div>
-
-            <!-- DIREITA -->
-            <div class="flex justify-end">
-
-                <span class="text-sm text-gray-500 hidden sm:block">
-
-                    Mostrando <strong>{{ $fornecedores->firstItem() }}</strong>
-                    até <strong>{{ $fornecedores->lastItem() }}</strong>
-                    de <strong>{{ $fornecedores->total() }}</strong> registros
-
-                </span>
-
-            </div>
-
-        </div>
-
+    <!-- Paginação -->
+    <div class="px-6">
+        {{ $fornecedores->links() }}
     </div>
 
 </div>
