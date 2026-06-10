@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Criar Fornecedor')
+
 @section('content')
 
 <div class="max-w-5xl mx-auto">

@@ -261,7 +261,7 @@
                                 class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-40">
                                 <!-- Editar -->
                                 <button
-                                    href="{{ route('cliente.edit', $cliente) }}"
+                                    @click="window.location.href = '{{ route('cliente.edit', $cliente) }}'; openMenu = false;"
                                     class="w-full text-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600">
                                     Editar
                                 </button>

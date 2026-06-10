@@ -43,7 +43,7 @@ class PopularSistema extends Seeder
 
             User::insert($user);
 
-            $this->command->line('[INFO] - Criando usuário master...');
+            $this->command->line('[INFO] - Criando usuário adm...');
             $this->command->line(str_repeat('-', 60));
 
             collect([
@@ -91,8 +91,6 @@ class PopularSistema extends Seeder
 
                         $registro = $config['factory']();
                     });
-
-                $this->command->line(str_repeat('-', 60));
             });
 
             DB::commit();
